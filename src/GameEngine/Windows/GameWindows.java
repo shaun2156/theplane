@@ -8,6 +8,8 @@ package GameEngine.Windows;
 import GameEngine.GameManager.GameManager;
 import GameEngine.GameManager.GameRunner;
 import GameEngine.TKNode.Scene;
+import Test.LayerBattle;
+
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
