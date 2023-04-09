@@ -3,27 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package GameEngine.TKNode;
+package engine.tknode;
 
-import java.awt.Graphics;
+import java.awt.*;
 
 /**
- *
  * @author Tdh4vn
  */
-public class Scene extends Node{
-    public Scene(){
+public class Layer extends Node {
+    public Layer() {
         super();
     }
+
     @Override
-    public void draw(Graphics g){
-        for(Node x : this.getVecChild()){
+    public void draw(Graphics g) {
+        for (Node x : this.getVecChild()) {
             x.draw(g);
         }
     }
-    public static Scene create(){
-        return new Scene();
-    }
-    
-    
+
 }

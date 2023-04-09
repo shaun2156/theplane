@@ -3,32 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Test;
+package plane_shooter;
 
-import GameEngine.GameManager.GameManager;
-import GameEngine.TKNode.Sprite;
 import com.sun.glass.ui.Size;
 import com.sun.javafx.geom.Vec2d;
-
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import engine.manager.GameManager;
+import engine.tknode.Sprite;
 
 /**
  * @author Tdh4vn
  */
 public class Bullet extends Sprite implements Collidable {
-    boolean currentPlayer;
-    public Bullet(float x, float y, boolean currentPlayer) throws IOException {
+    boolean verticalDirection;
+
+    int sourceId;
+
+    public Bullet(int sourceId, float x, float y, boolean verticalDirection) {
         super();
-        this.setTexture("DAN.png");
-        this.currentPlayer = currentPlayer;
-        float finalX = x - this.getContentSize().width / 2;
-        this.setPosition(finalX, y + this.getContentSize().height * (currentPlayer ? -1 : 1));
+        this.setTexture("BULLET.png");
+        this.verticalDirection = verticalDirection;
+        this.sourceId = sourceId;
+        float finalX = x - (float) this.getContentSize().width / 2;
+        this.setPosition(finalX, y + this.getContentSize().height * (verticalDirection ? -1 : 1));
 
         new Thread(new Runnable() {
             @Override
@@ -38,16 +34,16 @@ public class Bullet extends Sprite implements Collidable {
                         float finalY = Math.max(
                                 Math.min(
                                         GameManager.getInstance().getWinSize().height - (float) Bullet.this.getContentSize().height,
-                                        (float)  Bullet.this.getPosition().y + (currentPlayer ? -10 : 10)),
+                                        (float) Bullet.this.getPosition().y + (verticalDirection ? -10 : 10)),
                                 0);
-                        if(Bullet.this.getPosition().y == finalY) {
-                            LayerBattle.getInstance().removeChild(Bullet.this);
+                        if (Bullet.this.getPosition().y == finalY) {
+                            GameManager.getInstance().topScene().removeChild(Bullet.this);
                             return;
                         }
                         Bullet.this.setPosition(finalX, finalY);
                         Thread.sleep(1000 / 60);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Thread.currentThread().interrupt();
                         return;
                     }
                 }
@@ -58,11 +54,15 @@ public class Bullet extends Sprite implements Collidable {
 
     @Override
     public void collide(Collidable c) {
-        if(c instanceof Bullet) {
+        if (c instanceof Bullet) {
             Bullet otherBullet = (Bullet) c;
-            if(otherBullet.currentPlayer == ((Bullet) c).currentPlayer) return;
+            if (otherBullet.sourceId == this.sourceId) return;
         }
-        LayerBattle.getInstance().removeChild(Bullet.this);
+        if (c instanceof Plane) {
+            Plane plane = (Plane) c;
+            if (plane.planeId == this.sourceId) return;
+        }
+        GameManager.getInstance().topScene().removeChild(Bullet.this);
     }
 
     @Override

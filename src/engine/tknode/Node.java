@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package GameEngine.TKNode;
+package engine.tknode;
 
-import GameEngine.Windows.GameWindows;
-import Test.Bullet;
 import com.sun.javafx.geom.Vec2d;
+import engine.windows.GameWindows;
 
 import java.awt.*;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 import java.util.Vector;
 
 /**
@@ -21,6 +21,17 @@ public class Node {
     private Vec2d anchorPoint;
     private Vector<Node> vecChild;
 
+    public Node() {
+        position = new Vec2d(0, 0);
+        anchorPoint = new Vec2d(0.5, 0.5);
+        vecChild = new Vector<>();
+
+    }
+
+    public static Node create() {
+        return new Node();
+    }
+
     public Vector<Node> getVecChild() {
         return vecChild;
     }
@@ -29,14 +40,14 @@ public class Node {
         return position;
     }
 
+    public void setPosition(Vec2d position) {
+        this.position = position;
+    }
+
     public void setPosition(float x, float y) {
         this.position = new Vec2d(
                 Math.max(x, 0),
                 Math.max(y, 0));
-    }
-
-    public void setPosition(Vec2d position) {
-        this.position = position;
     }
 
     public Vec2d getAnchorPoint() {
@@ -51,19 +62,11 @@ public class Node {
         this.anchorPoint = new Vec2d(x, y);
     }
 
-    public Node() {
-        position = new Vec2d(0, 0);
-        anchorPoint = new Vec2d(0.5, 0.5);
-        vecChild = new Vector<Node>();
-
-    }
-
-    public static Node create() {
-        return new Node();
-    }
-
     public void update(float dt) {
-
+        //This will be used to update component frame-by-frame
+        for (Node node : this.getVecChild()) {
+            node.update(dt);
+        }
     }
 
     public void draw(Graphics g) {
@@ -78,6 +81,10 @@ public class Node {
 
     public void addKeyListener(KeyListener e) {
         GameWindows.getInstance().addKeyListener(e);
+    }
+
+    public void addMouseListener(MouseListener e) {
+        GameWindows.getInstance().addMouseListener(e);
     }
 
 }

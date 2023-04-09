@@ -3,34 +3,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Test;
+package plane_shooter;
 
-import GameEngine.TKNode.Layer;
-import GameEngine.TKNode.Node;
-import GameEngine.TKNode.Sprite;
+import engine.tknode.Layer;
+import engine.tknode.Node;
+import engine.tknode.Sprite;
 
-import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  *
  * @author Tdh4vn
  */
-public class LayerBattle extends Layer{
-    private static LayerBattle _mInstance;
+public class LayerBattle extends Layer {
     public LayerBattle() throws IOException{
         super();
         Sprite background = Sprite.create("Background.png");
         this.addChild(background);
         Plane su = new Plane();
         this.addChild(su);
-        this._mInstance = this;
     }
-
-    public static LayerBattle getInstance() {
-        return _mInstance;
+    @Override
+    public void update(float dt) {
+        super.update(dt);
+        processCollision();
     }
 
     public void processCollision() {
@@ -50,18 +46,4 @@ public class LayerBattle extends Layer{
         }
     }
 
-    Vector<Node> toRemove = new Vector<>();
-    @Override
-    public void draw(Graphics g){
-        processCollision();
-        for(Node x: this.getVecChild()){
-            x.draw(g);
-        }
-        this.getVecChild().removeAll(toRemove);
-        toRemove.clear();
-    }
-    public void removeChild(Node node) {
-        toRemove.add(node);
-
-    }
 }
